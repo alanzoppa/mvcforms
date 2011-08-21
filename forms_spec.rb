@@ -4,7 +4,7 @@ describe "Low level Field behavior" do
 
   before do
     class DerpForm < Form
-      @@derp_field = Field.new(:text)
+      @@derp_field = Field.new(:text, "Herp some derps")
     end
     @test_field = DerpForm.new.fields[0]
   end
@@ -17,6 +17,10 @@ describe "Low level Field behavior" do
     @test_field.to_html.should == "<input type='text' name='derp_field' id='id_derp_field' />"
   end
 
+  it "should generate its own labels" do
+    @test_field.label.should == "<label for='id_derp_field'>Herp some derps</label>"
+  end
+
 end
 
 
@@ -24,13 +28,13 @@ describe "Low level Form behavior" do
 
   before do
     class LoginForm < Form
-      @@username = Field.new(:text,)
-      @@password = Field.new(:text, :class => :pw)
+      @@username = Field.new(:text, "Username")
+      @@password = Field.new(:text, "Password", :class => :pw,)
     end
     @login_form = LoginForm.new
 
     class OptInForm < Form
-      @@future_communications = Field.new(:checkbox, :checked => :checked )
+      @@future_communications = Field.new(:checkbox, "Would you like to receive future communications", {:checked => :checked}, )
     end
     @opt_in_form = OptInForm.new
   end
