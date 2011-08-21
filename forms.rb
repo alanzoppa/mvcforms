@@ -1,30 +1,38 @@
-class Field
-  attr_accessor :type, :name, :css_class
 
-  def initialize(type, name, cl=nil)
-    self.type, self.name, self.css_class = type, name, cl
+class Field
+  attr_accessor :type, :label, :help_text, :html_id
+
+  def initialize(type, attributes=nil, label=nil, help_text=nil)
+    @type, @attributes = type, attributes
+    raise "Field.html_id is defined by the class value the field is set to" if attributes.has_key?(:id)
   end
 
-  def render
-    case self.type
-      when :input
-        return "<input type='text' name='#{self.name}' />"
-      else
-        return "bar"
-    end
-    return true
+  def to_html
+    value_pairs = @attributes.to_a.map {|key,value| "#{key}='#{value}'"}
+    value_pairs << "id='#{self.html_id}'"
+    value_pairs = value_pairs.join ' '
+    return "<input type='#{self.type}' #{value_pairs} />"
   end
 
 end
 
 
 class Form
-  def fields
-    @base_class = self.class
-    @class_vars = @base_class.class_variables.map { |v| @base_class.class_variable_get(v) }
-    #@class_vars.map! { |v| @base_class.class_variable_get(v) }
-    #puts @class_vars
-    #return "foo"
-    #self.class.class_variables.map {|v| self.class.class_variable_get(v)}
+  attr_accessor :fields
+
+  def initialize 
+    @fields = Array.new
+
+    # All class variables which are instances of Field
+    field_pairs = self.class.class_variables.map { |v|
+      if self.class.class_variable_get(v).class == Field
+        [ self.class.class_variable_get(v), v.to_s.gsub(/^@@/, '') ]
+      end
+    }
+    field_pairs.each do |field, field_id|
+      field.html_id = field_id.to_sym
+      @fields << field
+    end
   end
+
 end
