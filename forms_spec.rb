@@ -1,61 +1,79 @@
+$test_env = true
 require './forms'
+require 'nokogiri'
 
-describe "Low level Field behavior" do
+describe "A Low level TextField" do
 
   before do
     class DerpForm < Form
       @@derp_field = TextField.new("Herp some derps")
-      @@radio = RadioField.new("Male", "male", "sex")
     end
-    @test_field = DerpForm.new.fields[0]
-    @radio_field = DerpForm.new.fields[1]
+    @derp_field = DerpForm.new.fields[0]
+  end
+
+  it "should assign its name based on the class variable name" do
+    @derp_field._noko_first(:input)[:name].should == 'derp_field'
   end
 
   it "should assign its id based on the class variable name" do
-    @test_field.name.should == :derp_field
+    @derp_field._noko_first(:input)[:id].should == 'id_derp_field'
+  end
+
+  it "should base the field type on the assigning class" do
+    @derp_field._noko_first(:input)[:type].should == 'text'
   end
 
   it "should be able to template basic field types" do
-    @test_field.to_html.should == "<input type='text' name='derp_field' id='id_derp_field' />"
+    @derp_field.to_html.should == "<input type='text' name='derp_field' id='id_derp_field' />"
   end
 
   it "should generate its own labels" do
-    @test_field.label.should == "<label for='id_derp_field'>Herp some derps</label>"
-    @test_field.label_text.should == "Herp some derps"
+    @derp_field.label_tag.should == "<label for='id_derp_field'>Herp some derps</label>"
+    @derp_field.label_text.should == "Herp some derps"
   end
 
-  it "should create radio sub fields" do
-    @radio_field.to_labeled_html.should == "<input type='radio' name='sex' id='id_sex_male' value='male'><label for='id_sex_male'>Male</label>"
+end
+
+describe "A Low-level RadioField" do
+  #tests low level behavior. RadioFields should not be used directly.
+
+  before do
+    class DerpForm < Form
+      @@gender_choice = RadioField.new("Male", "male")
+    end
+    @gender_choice = DerpForm.new.fields[1]
   end
 
-  #it "should support radio buttons" do
-    #class GenderForm < Form
-      #gender_options = [ { :value => "male", :label => "Male", },
-                         #{ :value => "female", :label => "Female", }, ]
 
-      #@@sex = RadioChoiceField.new(gender_options, :checked => :checked,)
-    #end
-    #@gender_form = GenderForm.new
+  it "should have the radio type" do
+    @gender_choice._noko_first(:input)[:type].should == "radio"
+  end
 
-    #@gender_form.fields.should == [
-      #"<input type='radio' name='sex' value='male' />",
-      #"<input type='radio' name='sex' value='female' />"
-    #]
+  it "should be the class var name" do
+    @gender_choice._noko_first(:input)[:name].should == "gender_choice"
+  end
 
+  it "should have a name-based id" do
+    @gender_choice._noko_first(:input)[:id].should == "id_gender_choice_male"
+  end
 
-#<fieldset>
-#<input type="radio" name="group1" id="rad1" value="1"><label for="rad1">button one</label>
-#<input type="radio" name="group1" id="rad2" value="2"><label for="rad2">button two</label>
-#<input type="radio" name="group1" id="rad3" value="3">klabel for="rad3">button three</label>
-#</fieldset>
+  it "should properly create label tags and associate them to the input tag" do
+    @gender_choice._noko_label_tag[:for].should == 'id_gender_choice_male'
+    @gender_choice._noko_label_tag[:for].should == @gender_choice._noko_first(:input)[:id]
+  end
 
+  it "should be aware of its label text" do
+    @gender_choice.label_text.should == 'Male'
+  end
 
-  #end
+  it "should generate inputs with associated labels" do
+    @gender_choice.to_labeled_html.should == "<input type='radio' value='male' name='gender_choice' id='id_gender_choice_male' /><label for='id_gender_choice_male'>Male</label>"
+  end
 
 end
 
 
-describe "Low level Form behavior" do
+describe "A Low level Form" do
 
   before do
     class LoginForm < Form
@@ -86,5 +104,45 @@ describe "Low level Form behavior" do
       "<input type='checkbox' checked='checked' name='future_communications' id='id_future_communications' />"
     ]
   end
+
+end
+
+
+describe "A Form containing RadioFields" do
+  before do
+    class GenderForm < Form
+      @@gender = [
+        RadioField.new("Male", "male"),
+        RadioField.new("Female", "female"),
+      ]
+    end
+
+    class BrokenGenderForm < Form
+      @@gender = [
+        RadioField.new("Male", "male"),
+        TextField.new("Herp some derps")
+      ]
+    end
+
+    @gender_form = GenderForm.new
+  end
+
+  it "should break an Array of choices into seperate fields in the correct order" do
+    @gender_form.fields[0]._noko_first(:input)[:id].should == 'id_gender_male'
+    @gender_form.fields[1]._noko_first(:input)[:id].should == 'id_gender_female'
+  end
+
+  it "should give both fields the same name attribute" do
+    @gender_form.fields.all? { |field| field._noko_first(:input)[:name] == 'gender' }.should be_true
+  end
+
+  it "should make both fields radio buttons" do
+    @gender_form.fields.all? { |field| field._noko_first(:input)[:type] == 'radio' }.should be_true
+  end
+
+  it "should raise an error if the fields are not of the same type" do
+    lambda {BrokenGenderForm.new}.should raise_error(RuntimeError, "Fields must be of the same type")
+  end
+
 
 end
