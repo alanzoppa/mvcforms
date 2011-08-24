@@ -39,7 +39,7 @@ describe "A Low-level RadioField" do
 
   before do
     class DerpForm < Form
-      @@gender_choice = RadioField.new("Male", "male")
+      @@gender_choice = RadioField.new("Male")
     end
     @gender_choice = DerpForm.new.fields[1]
   end
@@ -118,14 +118,14 @@ describe "A Form containing RadioFields" do
   before do
     class GenderForm < Form
       @@gender = [
-        RadioField.new("Male", :male),
-        RadioField.new(:Female, "female"),
+        RadioField.new("Male"),
+        RadioField.new(:Female),
       ]
     end
 
     class BrokenGenderForm < Form
       @@gender = [
-        RadioField.new("Male", "male"),
+        RadioField.new("Male"),
         TextField.new("Herp some derps")
       ]
     end

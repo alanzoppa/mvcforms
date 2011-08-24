@@ -1,7 +1,7 @@
 require './test_module' if $test_env
 
 def symbolize string
-  string.gsub(/ /, '_').to_sym
+  string.to_s.gsub(/ /, '_').downcase.to_sym
 end
 
 class Field
@@ -43,9 +43,9 @@ class Field
 end
 
 class RadioField < Field
-  def initialize(label_text, value, attributes = Hash.new)
-    @label_text, @value, @attributes = label_text, value, attributes
-    @attributes[:value] = value
+  def initialize(label_text, attributes = Hash.new)
+    @label_text, @value, @attributes = label_text, symbolize(label_text), attributes
+    @attributes[:value] = @value
     @type = :radio
   end
 
