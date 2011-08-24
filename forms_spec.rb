@@ -112,8 +112,8 @@ describe "A Form containing RadioFields" do
   before do
     class GenderForm < Form
       @@gender = [
-        RadioField.new("Male", "male"),
-        RadioField.new("Female", "female"),
+        RadioField.new("Male", :male),
+        RadioField.new(:Female, "female"),
       ]
     end
 
@@ -132,6 +132,10 @@ describe "A Form containing RadioFields" do
     @gender_form.fields[1]._noko_first(:input)[:id].should == 'id_gender_female'
   end
 
+  it "should take a symbol or string for a label and preseve case" do
+    @gender_form.fields[0].label_text.should == "Male"
+  end
+
   it "should give both fields the same name attribute" do
     @gender_form.fields.all? { |field| field._noko_first(:input)[:name] == 'gender' }.should be_true
   end
@@ -144,5 +148,28 @@ describe "A Form containing RadioFields" do
     lambda {BrokenGenderForm.new}.should raise_error(RuntimeError, "Fields must be of the same type")
   end
 
-
 end
+
+
+#describe "A Form containing ChoiceFields" do
+  #before do
+    #class FamilyForm < Form
+      #@@gender = [
+        #ChoiceField.new("The Capulets", :capulet),
+        #ChoiceField.new("The Montagues", "montague"),
+      #]
+    #end
+
+    #class BrokenGenderForm < Form
+      #@@gender = [
+        #RadioField.new("Male", "male"),
+        #TextField.new("Herp some derps")
+      #]
+    #end
+
+    #@gender_form = GenderForm.new
+  #end
+
+#end
+
+
