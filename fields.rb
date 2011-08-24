@@ -40,10 +40,14 @@ class Field
 end
 
 class RadioField < Field
-  include ChoiceHelper
-
-  def _post_initialize
+  def initialize(label_text, value, attributes = Hash.new)
+    @label_text, @value, @attributes = label_text, value, attributes
+    @attributes[:value] = value
     @type = :radio
+  end
+
+  def html_id
+    "id_#{@name}_#{@value}"
   end
 
   def to_labeled_html
@@ -52,12 +56,16 @@ class RadioField < Field
 end
 
 class ChoiceField < Field
-  include ChoiceHelper
-
   def initialize(label_text, value, attributes = Hash.new)
-    super #overriding ChoiceHelper#initialize
-    @type = :option
+    @label_text, @value, @attributes = label_text, value, attributes
+    @attributes[:value] = value
+    @type = :radio
   end
+
+  def html_id
+    "id_#{@name}_#{@value}"
+  end
+
 end
 
 class TextField < Field
