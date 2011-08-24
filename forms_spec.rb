@@ -72,6 +72,12 @@ describe "A Low-level RadioField" do
 
 end
 
+describe "The symbolize method" do
+  it "should replace spaces with underscores" do
+    symbolize("foo bar baz").should == :foo_bar_baz
+  end
+end
+
 
 describe "A Low level Form" do
 
@@ -154,10 +160,8 @@ end
 #describe "A Form containing ChoiceFields" do
   #before do
     #class FamilyForm < Form
-      #@@gender = [
-        #ChoiceField.new("The Capulets", :capulet),
-        #ChoiceField.new("The Montagues", "montague"),
-      #]
+      #ChoiceField.new("The Capulets", :capulet),
+      #ChoiceField.new("The Montagues", "montague"),
     #end
 
     #class BrokenGenderForm < Form

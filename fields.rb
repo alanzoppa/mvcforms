@@ -1,5 +1,8 @@
 require './test_module' if $test_env
-require './field_helpers'
+
+def symbolize string
+  string.gsub(/ /, '_').to_sym
+end
 
 class Field
   include TestModule if $test_env
