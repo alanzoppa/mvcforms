@@ -157,23 +157,28 @@ describe "A Form containing RadioFields" do
 end
 
 
-#describe "A Form containing ChoiceFields" do
-  #before do
-    #class FamilyForm < Form
-      #ChoiceField.new("The Capulets", :capulet),
-      #ChoiceField.new("The Montagues", "montague"),
-    #end
+describe "A Form containing ChoiceFields" do
+  before do
+    class FamilyForm < Form
+      @@surname = ChoiceField.new("Choose a family", ['Capulet', 'Montague'])
+    end
 
-    #class BrokenGenderForm < Form
-      #@@gender = [
-        #RadioField.new("Male", "male"),
-        #TextField.new("Herp some derps")
-      #]
-    #end
+    @family_form = FamilyForm.new
+    @surname_field = @family_form.fields[0]
+  end
 
-    #@gender_form = GenderForm.new
-  #end
+  it "should generate a list of html options" do
+    @surname_field._html_options.should == "<option value='capulet'>Capulet</option><option value='montague'>Montague</option>"
+  end
 
-#end
+  it "should generate a complete select field" do
+    @surname_field.to_html.should == "<select name='surname' id='#{@surname_field.html_id}'>#{@surname_field._html_options}</select>"
+  end
 
 
+end
+
+#<select name="license" id="id_license">
+#<option value="capulet">Capulet</option>
+#<option value="montague">Montague</option>
+#</select>

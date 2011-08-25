@@ -8,16 +8,8 @@ class Field
   include TestModule if $test_env
   attr_accessor :type, :label_text, :name, :help_text, :html_id
 
-  def _standard_validation
-    unless @attributes.nil?
-      raise "Field.html_id is defined by the class value the field is set to" if @attributes.has_key?(:id)
-      raise "Field.name is defined by the class value the field is set to" if @attributes.has_key?(:name)
-    end
-  end
-
   def initialize(label_text=nil, attributes=nil, help_text=nil )
     @label_text, @help_text, @attributes = label_text, help_text, attributes
-    _standard_validation
     @type = self.class.to_s.gsub(/Field$/, '').downcase
   end
 
@@ -59,14 +51,20 @@ class RadioField < Field
 end
 
 class ChoiceField < Field
-  def initialize(label_text, value, attributes = Hash.new)
-    @label_text, @value, @attributes = label_text, value, attributes
-    @attributes[:value] = value
-    @type = :radio
+  def initialize(label_text, values, attributes = Hash.new)
+    @label_text, @values, @attributes = label_text, values, attributes
   end
 
   def html_id
-    "id_#{@name}_#{@value}"
+    "id_#{@name}"
+  end
+
+  def _html_options
+    @values.map { |v| "<option value='#{symbolize v}'>#{v}</option>" }.join
+  end
+
+  def to_html
+    "<select name='#{@name}' id='#{html_id}'>#{_html_options}</select>"
   end
 
 end
