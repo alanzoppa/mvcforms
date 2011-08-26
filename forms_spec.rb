@@ -34,6 +34,38 @@ describe "A Low level TextField" do
 
 end
 
+describe "A Checkbox field" do
+  before do
+    class UglinessForm < Form
+      @@ugly = CheckboxField.new("Check here if ugly")
+      @@stupid = CheckboxField.new("Check here if stupid")
+    end
+    @ugliness_form = UglinessForm.new
+    @ugly_field = @ugliness_form.fields[0]
+    @stupid_field = @ugliness_form.fields[1]
+  end
+
+  it "should have the checkbox type" do
+    @ugly_field._noko_first(:input)[:type].should == "checkbox"
+    @stupid_field._noko_first(:input)[:type].should == "checkbox"
+  end
+
+  it "should generate its own labels" do
+    @stupid_field.label_text.should == "Check here if stupid"
+    @ugly_field.label_text.should == "Check here if ugly"
+  end
+
+  it "should give its label tag an input id based 'for'" do
+    @ugly_field._noko_label_tag[:for].should == "id_ugly"
+    @stupid_field._noko_label_tag[:for].should == "id_stupid"
+  end
+
+  it "should render correctly" do
+    @stupid_field.to_labeled_html.should == "<input type='checkbox' name='stupid' id='id_stupid' /><label for='id_stupid'>Check here if stupid</label>"
+  end
+
+end
+
 describe "A Low-level RadioField" do
   #tests low level behavior. RadioFields should not be used directly.
 
@@ -67,7 +99,7 @@ describe "A Low-level RadioField" do
   end
 
   it "should generate inputs with associated labels" do
-    @gender_choice.to_labeled_html.should == "<input type='radio' value='male' name='gender_choice' id='id_gender_choice_male' /><label for='id_gender_choice_male'>Male</label>"
+    @gender_choice.to_labeled_html.should == "<input value='male' type='radio' name='gender_choice' id='id_gender_choice_male' /><label for='id_gender_choice_male'>Male</label>"
   end
 
 end
@@ -95,7 +127,7 @@ describe "A Low level Form" do
     fields_as_strings = @login_form.fields.map {|f| f.to_html}
     fields_as_strings.should == [
       "<input type='text' name='username' id='id_username' />",
-      "<input type='text' class='pw' name='password' id='id_password' />",
+      "<input class='pw' type='text' name='password' id='id_password' />",
     ]
   end
 
@@ -107,7 +139,7 @@ describe "A Low level Form" do
 
     fields_as_strings = @opt_in_form.fields.map {|f| f.to_html}
     fields_as_strings.should == [
-      "<input type='checkbox' checked='checked' name='future_communications' id='id_future_communications' />"
+      "<input checked='checked' type='checkbox' name='future_communications' id='id_future_communications' />"
     ]
   end
 
@@ -117,19 +149,46 @@ end
 describe "A Form containing RadioFields" do
   before do
     class GenderForm < Form
-      @@gender = RadioChoiceField.new(["Male", "Female"])
+      @@gender = RadioChoiceField.new("Choose your gender", ["Male", "Female"])
     end
 
     @gender_form = GenderForm.new
+    @gender_field = @gender_form.fields[0]
+    @male_field = @gender_field.fields[0]
+    @female_field = @gender_field.fields[1]
   end
 
-
-  it "should generate a list of html options" do
-    puts @gender_form.fields[0].class
-    #@gender_form.fields[0]._html_options.should ==
-      #"<option value='capulet'>Capulet</option><option value='montague'>Montague</option>"
+  it "should have sub-fields that render correctly" do
+    @male_field.to_html.should == "<input value='male' type='radio' name='gender' id='id_gender_male' />"
   end
 
+  it "should assign values based on symbolized entries in the array" do
+    @female_field._noko_first(:input)[:value].should == 'female'
+    @male_field._noko_first(:input)[:value].should == 'male'
+  end
+
+  it "should assign create a type='radio' field for each Array member" do
+    @male_field._noko_first(:input)[:type].should == 'radio'
+    @female_field._noko_first(:input)[:type].should == 'radio'
+  end
+
+  it "should name them both based on the class var" do
+    @male_field._noko_first(:input)[:name].should == 'gender'
+    @female_field._noko_first(:input)[:name].should == 'gender'
+  end
+
+  it "should base their ids on the class var and value" do
+    @male_field._noko_first(:input)[:id].should == 'id_gender_male'
+    @female_field._noko_first(:input)[:id].should == 'id_gender_female'
+  end
+
+  it "should create a fieldset with an id based on the class var" do
+    @gender_field._noko_first(:fieldset)[:id].should == 'id_gender'
+  end
+
+  it "should create a legend from the label text" do
+    @gender_field._noko_first(:legend).content.should == "Choose your gender"
+  end
 
 end
 
@@ -153,8 +212,3 @@ describe "A Form containing ChoiceFields" do
   end
 
 end
-
-#<select name="license" id="id_license">
-#<option value="capulet">Capulet</option>
-#<option value="montague">Montague</option>
-#</select>

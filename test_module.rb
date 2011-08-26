@@ -1,8 +1,12 @@
 require 'nokogiri'
 
 module TestModule
+  def _noko_nth(tag, n)
+    Nokogiri::HTML(self.to_html).search(tag)[n]
+  end
+
   def _noko_first tag
-    Nokogiri::HTML(self.to_html).search(tag)[0]
+    _noko_nth(tag, 0)
   end
 
   def _noko_label_tag
