@@ -19,9 +19,9 @@ class Field
 
   def to_html
     value_pairs = @attributes.to_a.map {|key,value| "#{key}='#{value}'"}
-    value_pairs << ["name='#{self.name}'", "id='#{self.html_id}'"]
+    value_pairs << ["type='#{@type}'", "name='#{self.name}'", "id='#{self.html_id}'"]
     value_pairs = value_pairs.join ' '
-    return "<input type='#{self.type}' #{value_pairs} />"
+    return "<input #{value_pairs} />"
   end
 
   def label_tag
@@ -39,6 +39,7 @@ class RadioField < Field
     @value, @attributes, @type = value, attributes, :radio
     @attributes[:value] = @value.downcase
     @label_text = @value
+    @type = :radio
   end
 
   def _html_options
@@ -47,6 +48,13 @@ class RadioField < Field
 
   def html_id
     "id_#{@name}_#{@value}".downcase
+  end
+
+  def to_html
+    value_pairs = @attributes.to_a.map {|key,value| "#{key}='#{value}'"}
+    value_pairs << ["type='#{@type}'", "name='#{self.name}'", "id='#{self.html_id}'"]
+    value_pairs = value_pairs.join ' '
+    return "<input #{value_pairs} />"
   end
 
   def to_labeled_html
@@ -73,14 +81,22 @@ class ChoiceField < Field
 end
 
 class RadioChoiceField < Field
+  attr_accessor :fields
   def initialize(values, attributes = Array.new)
-    @values, @attributes, @value = values, attributes, :radio
+    @values, @attributes, @value, @fields = values, attributes, :radio, Array.new
     @fields = values.map { |value| RadioField.new(value) }
   end
 
+  def attach_names! name
+    @fields.each {|field| field.name = name }
+  end
+
   def _html_options
-    @values.map { |v| "<option value='#{symbolize v}'>#{v}</option>" }.join
-    #<input type='radio' name='#{@name}' value='#{symbolize v}'><br>
+    @fields.map { |v| v.to_html }.join
+  end
+
+  def to_html
+    "<fieldset id='id_gender'><legend>#{self.name}</legend>#{self._html_options}</fieldset>"
   end
 end
 

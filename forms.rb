@@ -5,7 +5,9 @@ class Form
 
   def _attach_field_name(field, field_name)
       field.name = field_name.to_sym
+      field.attach_names!(field_name) if field.respond_to?(:attach_names!)
       @fields << field
+      #puts field.name if field.class == RadioChoiceField
   end
 
   def initialize 
@@ -14,7 +16,6 @@ class Form
     self.class.class_variables.each do |v| # All class variables which are instances of Field
       field = self.class.class_variable_get(v)
       field_name = v.to_s.gsub(/^@@/, '')
-
       if field.class == Array && field.all? {|f| f.class.superclass == Field}
         raise "Fields must be of the same type" unless field.all? {|f| f.class == field[0].class }
         field.each {|f| _attach_field_name(f, field_name) }
