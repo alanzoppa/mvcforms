@@ -117,42 +117,19 @@ end
 describe "A Form containing RadioFields" do
   before do
     class GenderForm < Form
-      @@gender = [
-        RadioField.new("Male"),
-        RadioField.new(:Female),
-      ]
-    end
-
-    class BrokenGenderForm < Form
-      @@gender = [
-        RadioField.new("Male"),
-        TextField.new("Herp some derps")
-      ]
+      @@gender = RadioChoiceField.new(["Male", "Female"])
     end
 
     @gender_form = GenderForm.new
   end
 
-  it "should break an Array of choices into seperate fields in the correct order" do
-    @gender_form.fields[0]._noko_first(:input)[:id].should == 'id_gender_male'
-    @gender_form.fields[1]._noko_first(:input)[:id].should == 'id_gender_female'
+
+  it "should generate a list of html options" do
+    puts @gender_form.fields[0].class
+    #@gender_form.fields[0]._html_options.should ==
+      #"<option value='capulet'>Capulet</option><option value='montague'>Montague</option>"
   end
 
-  it "should take a symbol or string for a label and preseve case" do
-    @gender_form.fields[0].label_text.should == "Male"
-  end
-
-  it "should give both fields the same name attribute" do
-    @gender_form.fields.all? { |field| field._noko_first(:input)[:name] == 'gender' }.should be_true
-  end
-
-  it "should make both fields radio buttons" do
-    @gender_form.fields.all? { |field| field._noko_first(:input)[:type] == 'radio' }.should be_true
-  end
-
-  it "should raise an error if the fields are not of the same type" do
-    lambda {BrokenGenderForm.new}.should raise_error(RuntimeError, "Fields must be of the same type")
-  end
 
 end
 
@@ -174,7 +151,6 @@ describe "A Form containing ChoiceFields" do
   it "should generate a complete select field" do
     @surname_field.to_html.should == "<select name='surname' id='#{@surname_field.html_id}'>#{@surname_field._html_options}</select>"
   end
-
 
 end
 

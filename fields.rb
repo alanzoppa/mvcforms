@@ -35,14 +35,18 @@ class Field
 end
 
 class RadioField < Field
-  def initialize(label_text, attributes = Hash.new)
-    @label_text, @value, @attributes = label_text, symbolize(label_text), attributes
-    @attributes[:value] = @value
-    @type = :radio
+  def initialize(value, attributes = Hash.new)
+    @value, @attributes, @type = value, attributes, :radio
+    @attributes[:value] = @value.downcase
+    @label_text = @value
+  end
+
+  def _html_options
+    @value.map { |v| "<input type='radio' value='#{v}' name='#{@name}' id='#{html_id}' />" }.join
   end
 
   def html_id
-    "id_#{@name}_#{@value}"
+    "id_#{@name}_#{@value}".downcase
   end
 
   def to_labeled_html
@@ -66,7 +70,18 @@ class ChoiceField < Field
   def to_html
     "<select name='#{@name}' id='#{html_id}'>#{_html_options}</select>"
   end
+end
 
+class RadioChoiceField < Field
+  def initialize(values, attributes = Array.new)
+    @values, @attributes, @value = values, attributes, :radio
+    @fields = values.map { |value| RadioField.new(value) }
+  end
+
+  def _html_options
+    @values.map { |v| "<option value='#{symbolize v}'>#{v}</option>" }.join
+    #<input type='radio' name='#{@name}' value='#{symbolize v}'><br>
+  end
 end
 
 class TextField < Field
