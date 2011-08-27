@@ -30,6 +30,10 @@ describe "A Form with a TextField" do
     puts @derp_form.get(:label_tag, :derp_field).should == "<label for='id_derp_field'>Herp some derps</label>"
   end
 
+  it "should be able to get field instances" do
+    @derp_form.get_field_instance(:derp_field).should == @derp_field
+  end
+
 end
 
 

@@ -7,7 +7,7 @@ end
 
 class Field
   include TestModule if $test_env
-  attr_accessor :type, :label_text, :name, :help_text, :html_id
+  attr_accessor :type, :label_text, :name, :help_text, :html_id, :errors
 
   def initialize(label_text=nil, attributes=nil, help_text=nil )
     @label_text, @attributes, @help_text = label_text, attributes, help_text

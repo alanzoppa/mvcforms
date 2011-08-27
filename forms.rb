@@ -35,7 +35,10 @@ class Form
     @fields.each do |field|
       @queryable_structures[field.name.to_sym] = {
         :field => field.to_html,
+        :instance => field,
         :label_tag => field.label_tag,
+        :help_text => field.help_text,
+        :errors => field.errors,
       }
     end
   end
@@ -55,5 +58,19 @@ class Form
   def get_label_tag field
     return get_group(field)[:label_tag]
   end
+
+  def get_field_instance field
+    return get_group(field)[:instance]
+  end
+
+  def get_help_text field
+    return get_group(field)[:help_text]
+  end
+
+  def get_errors field
+    return get_group(field)[:errors]
+  end
+ 
+ 
   
 end
