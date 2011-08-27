@@ -4,6 +4,7 @@ def symbolize string
   string.to_s.gsub(/ /, '_').downcase.to_sym
 end
 
+
 class Field
   include TestModule if $test_env
   attr_accessor :type, :label_text, :name, :help_text, :html_id
