@@ -1,6 +1,7 @@
 require "./fields"
 
 class Form
+  #include TestModule if $test_env
   attr_accessor :fields
 
   def initialize 
@@ -38,6 +39,7 @@ class Form
         :label_tag => field.label_tag,
         :help_text => field.help_text,
         :errors => field.errors,
+        :instance => field
       }
     end
   end
@@ -66,7 +68,12 @@ class Form
     return get_group(field)[:errors]
   end
  
-  def to_form
+  def to_html
+    output = String.new
+    @fields.each do |field|
+      output += "<p>#{field.to_labeled_html}</p>\n"
+    end
+    return output
   end
   
 end
