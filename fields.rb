@@ -102,6 +102,14 @@ class RadioChoiceField < Field
   end
 
   def to_html
+    "<fieldset id='id_gender'><legend>#{self.name}</legend>#{self._html_options}</fieldset>"
+  end
+
+  def _html_options
+    @fields.map { |v| v.to_html }.join
+  end
+
+  def to_html
     "<fieldset id='id_#{@name}'><legend>#{self.label_text}</legend>#{self._html_options}</fieldset>"
   end
 end
