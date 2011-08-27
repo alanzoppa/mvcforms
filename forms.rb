@@ -66,6 +66,7 @@ class Form
     return get_group(field)[:errors]
   end
  
- 
+  def to_form
+  end
   
 end

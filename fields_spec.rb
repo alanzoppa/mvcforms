@@ -36,6 +36,9 @@ describe "A Low level TextField" do
     @derp_field.label_text.should == "Herp some derps"
   end
 
+  it "should wrap fields with <p> tags by default" do
+  end
+
 end
 
 describe "A Checkbox field" do

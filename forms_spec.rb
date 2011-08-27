@@ -27,8 +27,13 @@ describe "A Form with a TextField" do
   end
 
   it "should be able to get individual labels" do
-    puts @derp_form.get(:label_tag, :derp_field).should == "<label for='id_derp_field'>Herp some derps</label>"
+    @derp_form.get(:label_tag, :derp_field).should == "<label for='id_derp_field'>Herp some derps</label>"
   end
+
+  #it "should render the contents of <form> tags inside <p> tags" do
+    #@derp_form.to_form.should ==
+      #"<p>"
+  #end
 
 end
 

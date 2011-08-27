@@ -4,6 +4,15 @@ def symbolize string
   string.to_s.gsub(/ /, '_').downcase.to_sym
 end
 
+def flatten_attributes(hash=nil)
+  hash.to_a.map {|key,value| "#{key}='#{value}'"}.join ' '
+end
+
+def wrap_tag(string, with=:p, attributes=nil)
+  with_open = 
+    attributes.nil? ? with : "#{with} " + flatten_attributes(attributes)
+  return "<#{with_open}>#{string}</#{with}>"
+end
 
 class Field
   include TestModule if $test_env
@@ -19,10 +28,11 @@ class Field
   end
 
   def to_html
-    value_pairs = @attributes.to_a.map {|key,value| "#{key}='#{value}'"}
-    value_pairs << ["type='#{@type}'", "name='#{self.name}'", "id='#{self.html_id}'"]
-    value_pairs = value_pairs.join ' '
-    return "<input #{value_pairs} />"
+    value_pairs = @attributes.nil? ? Hash.new : @attributes.dup
+    value_pairs[:type] = @type
+    value_pairs[:name] = self.name
+    value_pairs[:id] = self.html_id
+    return "<input #{flatten_attributes value_pairs} />"
   end
 
   def label_tag
@@ -31,6 +41,9 @@ class Field
 
   def to_labeled_html
     label_tag + to_html
+  end
+
+  def to_wrapped_field tag=:p
   end
 
 end
@@ -58,13 +71,6 @@ class RadioField < Field
 
   def html_id
     "id_#{@name}_#{@value}".downcase
-  end
-
-  def to_html
-    value_pairs = @attributes.to_a.map {|key,value| "#{key}='#{value}'"}
-    value_pairs << ["type='#{@type}'", "name='#{self.name}'", "id='#{self.html_id}'"]
-    value_pairs = value_pairs.join ' '
-    return "<input #{value_pairs} />"
   end
 
   def to_labeled_html
@@ -100,10 +106,6 @@ class RadioChoiceField < Field
 
   def _html_options
     @fields.map { |v| v.to_html }.join
-  end
-
-  def to_html
-    "<fieldset id='id_gender'><legend>#{self.name}</legend>#{self._html_options}</fieldset>"
   end
 
   def _html_options
