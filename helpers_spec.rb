@@ -3,7 +3,6 @@ $test_env = true
 require "./forms"
 require "./fields"
 
-require 'nokogiri'
 
 describe "the symbolize method" do
   it "should replace spaces with underscores" do

@@ -7,6 +7,10 @@ class Form
   def initialize 
     _initialize_fields
     _prepare_getters
+    _define_defaults
+  end
+
+  def _define_defaults
   end
 
   def _initialize_fields
@@ -68,10 +72,10 @@ class Form
     return get_group(field)[:errors]
   end
  
-  def to_html
+  def to_html(tag=:p, attributes=nil)
     output = String.new
     @fields.each do |field|
-      output += "<p>#{field.to_labeled_html}</p>\n"
+      output += (wrap_tag(field.to_labeled_html, tag, attributes) + "\n")
     end
     return output
   end

@@ -3,9 +3,6 @@ $test_env = true
 require "./forms"
 
 
-#require '../forms'
-require 'nokogiri'
-
 describe "A Low level TextField" do
 
   before do
@@ -34,9 +31,6 @@ describe "A Low level TextField" do
   it "should generate its own labels" do
     @derp_field.label_tag.should == "<label for='id_derp_field'>Herp some derps</label>"
     @derp_field.label_text.should == "Herp some derps"
-  end
-
-  it "should wrap fields with <p> tags by default" do
   end
 
 end

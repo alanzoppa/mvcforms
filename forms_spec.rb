@@ -1,6 +1,5 @@
 $test_env = true
 require './forms'
-require 'nokogiri'
 
 require "./fields_spec"
 require "./helpers_spec"
@@ -35,25 +34,14 @@ describe "A Form with a TextField" do
     @text_form.to_html.should == "<p>#{@text_field.to_labeled_html}</p>\n"
   end
 
+  it "should wrap fields with anything else on request" do
+    @text_form.to_html(:span).should == "<span>#{@text_field.to_labeled_html}</span>\n"
+    @text_form.to_html(:div).should == "<div>#{@text_field.to_labeled_html}</div>\n"
+  end
 
+  it "should accept a hash of attributes for the wrapping tag" do
+    @text_form.to_html(:p, {:class => :some_herps}).should == "<p class='some_herps'>#{@text_field.to_labeled_html}</p>\n"
+    @text_form.to_html(:p, {:class => :some_herps, :id => "le_id"}).should == "<p class='some_herps' id='le_id'>#{@text_field.to_labeled_html}</p>\n"
+  end
 
-  #it "should render the contents of <form> tags inside <p> tags" do
-    #@text_form.to_form.should ==
-      #"<p>"
-  #end
-
-end
-
-
-
-
-  #it "should be able to template basic field types" do
-    #@text_field.to_html.should == "<input type='text' name='text_field' id='id_text_field' />"
-  #end
-
-  #it "should generate its own labels" do
-    #@text_field.label_tag.should == "<label for='id_text_field'>Herp some derps</label>"
-    #@text_field.label_text.should == "Herp some derps"
-  #end
-
-
+end 
