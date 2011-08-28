@@ -11,6 +11,25 @@ describe "A Form with a TextField" do
     end
     @text_form = TextFieldForm.new
     @text_field = @text_form.fields[0]
+
+    class DefaultAttributesForm < Form
+      def _define_defaults
+        super
+        @__settings[:wrapper] = :span
+        @__settings[:wrapper_attributes] = {:class => :some_herps}
+      end
+
+  #def _define_defaults
+    #@__settings = {:wrapper => :p, :wrapper_attributes => nil}
+  #end
+
+
+
+      @@text_field = TextField.new("Herp some derps")
+    end
+
+    @default_attributes_form = DefaultAttributesForm.new
+    @default_attributes_field = @default_attributes_form.fields[0]
   end
 
 
@@ -42,6 +61,10 @@ describe "A Form with a TextField" do
   it "should accept a hash of attributes for the wrapping tag" do
     @text_form.to_html(:p, {:class => :some_herps}).should == "<p class='some_herps'>#{@text_field.to_labeled_html}</p>\n"
     @text_form.to_html(:p, {:class => :some_herps, :id => "le_id"}).should == "<p class='some_herps' id='le_id'>#{@text_field.to_labeled_html}</p>\n"
+  end
+
+  it "should accept overrides to the defaults" do
+    @default_attributes_form.to_html.should == "<span class='some_herps'>#{@text_field.to_labeled_html}</span>\n"
   end
 
 end 

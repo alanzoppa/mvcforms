@@ -11,6 +11,7 @@ class Form
   end
 
   def _define_defaults
+    @__settings = {:wrapper => :p, :wrapper_attributes => nil}
   end
 
   def _initialize_fields
@@ -47,7 +48,7 @@ class Form
       }
     end
   end
-
+  
   def get_group field
     return @queryable_structures[field.to_sym]
   end
@@ -72,7 +73,7 @@ class Form
     return get_group(field)[:errors]
   end
  
-  def to_html(tag=:p, attributes=nil)
+  def to_html(tag=@__settings[:wrapper], attributes=@__settings[:wrapper_attributes])
     output = String.new
     @fields.each do |field|
       output += (wrap_tag(field.to_labeled_html, tag, attributes) + "\n")
