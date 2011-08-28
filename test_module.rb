@@ -1,3 +1,4 @@
+$test_env = true
 require 'nokogiri'
 
 module TestModule

@@ -1,4 +1,4 @@
-$test_env = true
+require './test_module'
 require './forms'
 
 require "./fields_spec"
@@ -18,12 +18,6 @@ describe "A Form with a TextField" do
         @__settings[:wrapper] = :span
         @__settings[:wrapper_attributes] = {:class => :some_herps}
       end
-
-  #def _define_defaults
-    #@__settings = {:wrapper => :p, :wrapper_attributes => nil}
-  #end
-
-
 
       @@text_field = TextField.new("Herp some derps")
     end
@@ -68,3 +62,43 @@ describe "A Form with a TextField" do
   end
 
 end 
+
+
+describe "A more complicated form with multiple fields" do
+
+  before do
+    class MoreComplicatedForm < Form
+      @@description_of_derps = TextField.new("Herp some derps")
+      @@gender_choice = RadioChoiceField.new("Choose your gender", ["Male", "Female"])
+      @@cat = CheckboxField.new("Are you a cat?", :checked => :checked, )
+      @@family = ChoiceField.new("Choose a family", ['Capulet', 'Montague', "Other"])
+
+      def _define_defaults
+        super
+        @__settings[:wrapper] = :div
+        @__settings[:wrapper_attributes] = {:class => "more_complicated"}
+      end
+
+    end
+
+    @more_complicated_form = MoreComplicatedForm.new
+    @description_of_derps_field = @more_complicated_form.get_field(:description_of_derps)
+    @gender_choice_field = @more_complicated_form.get_field(:gender_choice)
+    @cat_field = @more_complicated_form.get_group(:cat)[:field]
+    @family_field = @more_complicated_form.get_field(:family)
+  end
+
+  it "prints itself" do
+    #print @more_complicated_form.class
+    #print "\n"
+    #print @more_complicated_form.to_html
+  end
+
+  it "should generate four <divs> with the class 'more_complicated'" do
+    @more_complicated_form._noko_first(:div)[:class].should == "more_complicated"
+    @more_complicated_form._noko_nth(:div, 1)[:class].should == "more_complicated"
+    @more_complicated_form._noko_nth(:div, 2)[:class].should == "more_complicated"
+    @more_complicated_form._noko_nth(:div, 3)[:class].should == "more_complicated"
+  end
+
+end

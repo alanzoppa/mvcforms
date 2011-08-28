@@ -1,7 +1,8 @@
+require './test_module' if $test_env
 require "./fields"
 
 class Form
-  #include TestModule if $test_env
+  include TestModule if $test_env
   attr_accessor :fields
 
   def initialize 
