@@ -43,9 +43,6 @@ class Field
     label_tag + to_html
   end
 
-  def to_wrapped_field tag=:p
-  end
-
 end
 
 class TextField < Field
@@ -67,9 +64,7 @@ class ChoiceField < Field
   end
 
   def to_html
-    #"<select name='#{@name}' id='#{html_id}'>#{_html_options}</select>"
-    #wrap_tag(fieldset_legend + self._html_options, :fieldset, {:id => html_id})
-    wrap_tag("#{_html_options}\n", :select, {:id => html_id, :name => @name})
+    "\n" + wrap_tag("#{_html_options}\n", :select, {:id => html_id, :name => @name})
   end
 end
 

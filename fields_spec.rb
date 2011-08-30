@@ -210,7 +210,9 @@ describe "A Form containing ChoiceFields" do
   end
 
   it "should generate a complete select field" do
-    @surname_field.to_html.should == "<select id='#{@surname_field.html_id}' name='surname'>#{@surname_field._html_options}\n</select>"
+    field = @surname_field._noko_first(:select)
+    field[:id].should == @surname_field.html_id.to_s
+    field[:name].should == 'surname'
   end
 
 end
