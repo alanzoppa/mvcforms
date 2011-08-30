@@ -100,7 +100,7 @@ describe "A Low-level RadioField" do
   end
 
   it "should generate inputs with associated labels" do
-    @gender_choice.to_labeled_html.should == "<input value='male' type='radio' name='gender_choice' id='id_gender_choice_male' /><label for='id_gender_choice_male'>Male</label>"
+    @gender_choice.to_labeled_html.should == "  <input value='male' type='radio' name='gender_choice' id='id_gender_choice_male' /><label for='id_gender_choice_male'>Male</label>\n"
   end
 
 end
@@ -160,6 +160,7 @@ describe "A Form containing RadioFields" do
   end
 
   it "should have sub-fields that render correctly" do
+    print "\n" + @gender_field.to_html
     @male_field.to_html.should == "<input value='male' type='radio' name='gender' id='id_gender_male' />"
   end
 
@@ -205,7 +206,7 @@ describe "A Form containing ChoiceFields" do
   end
 
   it "should generate a list of html options" do
-    @surname_field._html_options.should == "<option value='capulet'>Capulet</option><option value='montague'>Montague</option>"
+    @surname_field._html_options.should == "\n  <option value='capulet'>Capulet</option>\n  <option value='montague'>Montague</option>"
   end
 
   it "should generate a complete select field" do

@@ -57,6 +57,20 @@ class CheckboxField < Field
   end
 end
 
+class ChoiceField < Field
+  def initialize(label_text, values, attributes = Hash.new)
+    @label_text, @values, @attributes = label_text, values, attributes
+  end
+
+  def _html_options
+    @values.map { |v| "\n  " + "<option value='#{symbolize v}'>#{v}</option>" }.join
+  end
+
+  def to_html
+    "<select name='#{@name}' id='#{html_id}'>#{_html_options}</select>"
+  end
+end
+
 class RadioField < Field
   def initialize(value, attributes = Hash.new)
     @value, @attributes, @type = value, attributes, :radio
@@ -65,30 +79,12 @@ class RadioField < Field
     @type = :radio
   end
 
-  def _html_options
-    @value.map { |v| "<input type='radio' value='#{v}' name='#{@name}' id='#{html_id}' />" }.join
-  end
-
   def html_id
     "id_#{@name}_#{@value}".downcase
   end
 
   def to_labeled_html
-    to_html + label_tag
-  end
-end
-
-class ChoiceField < Field
-  def initialize(label_text, values, attributes = Hash.new)
-    @label_text, @values, @attributes = label_text, values, attributes
-  end
-
-  def _html_options
-    @values.map { |v| "<option value='#{symbolize v}'>#{v}</option>" }.join
-  end
-
-  def to_html
-    "<select name='#{@name}' id='#{html_id}'>#{_html_options}</select>"
+    "  " + to_html + label_tag + "\n"
   end
 end
 
@@ -100,19 +96,23 @@ class RadioChoiceField < Field
     @fields = values.map { |value| RadioField.new(value) }
   end
 
+  def html_id
+    "id_#{@name}"
+  end
+
   def attach_names! name
     @fields.each {|field| field.name = name }
   end
 
   def _html_options
-    @fields.map { |v| v.to_html }.join
+    @fields.map { |v| v.to_labeled_html }.join
   end
 
-  def _html_options
-    @fields.map { |v| v.to_html }.join
+  def fieldset_legend
+    "\n  <legend>#{self.label_text}</legend>\n"
   end
 
   def to_html
-    "<fieldset id='id_#{@name}'><legend>#{self.label_text}</legend>#{self._html_options}</fieldset>"
+    wrap_tag(fieldset_legend + self._html_options, :fieldset, {:id => html_id})
   end
 end

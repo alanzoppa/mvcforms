@@ -88,12 +88,9 @@ describe "A more complicated form with multiple fields" do
     @family_field = @more_complicated_form.get_field(:family)
   end
 
-  #it "prints itself" do
+  it "should generate four <divs> with the class 'more_complicated'" do
     #print "\n"
     #print @more_complicated_form.to_html
-  #end
-
-  it "should generate four <divs> with the class 'more_complicated'" do
     @more_complicated_form._noko_first(:div)[:class].should == "more_complicated"
     @more_complicated_form._noko_nth(:div, 1)[:class].should == "more_complicated"
     @more_complicated_form._noko_nth(:div, 2)[:class].should == "more_complicated"
