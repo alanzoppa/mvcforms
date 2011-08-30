@@ -44,21 +44,21 @@ describe "A Form with a TextField" do
   end
 
   it "should wrap fields with <p> tags by default" do
-    @text_form.to_html.should == "<p>#{@text_field.to_labeled_html}</p>\n"
+    @text_form.to_html.should == "<p>\n  #{@text_field.to_labeled_html}\n</p>\n"
   end
 
   it "should wrap fields with anything else on request" do
-    @text_form.to_html(:span).should == "<span>#{@text_field.to_labeled_html}</span>\n"
-    @text_form.to_html(:div).should == "<div>#{@text_field.to_labeled_html}</div>\n"
+    @text_form.to_html(:span).should == "<span>\n  #{@text_field.to_labeled_html}\n</span>\n"
+    @text_form.to_html(:div).should == "<div>\n  #{@text_field.to_labeled_html}\n</div>\n"
   end
 
   it "should accept a hash of attributes for the wrapping tag" do
-    @text_form.to_html(:p, {:class => :some_herps}).should == "<p class='some_herps'>#{@text_field.to_labeled_html}</p>\n"
-    @text_form.to_html(:p, {:class => :some_herps, :id => "le_id"}).should == "<p class='some_herps' id='le_id'>#{@text_field.to_labeled_html}</p>\n"
+    @text_form.to_html(:p, {:class => :some_herps}).should == "<p class='some_herps'>\n  #{@text_field.to_labeled_html}\n</p>\n"
+    @text_form.to_html(:p, {:class => :some_herps, :id => "le_id"}).should == "<p class='some_herps' id='le_id'>\n  #{@text_field.to_labeled_html}\n</p>\n"
   end
 
   it "should accept overrides to the defaults" do
-    @default_attributes_form.to_html.should == "<span class='some_herps'>#{@text_field.to_labeled_html}</span>\n"
+    @default_attributes_form.to_html.should == "<span class='some_herps'>\n  #{@text_field.to_labeled_html}\n</span>\n"
   end
 
 end 
@@ -89,12 +89,11 @@ describe "A more complicated form with multiple fields" do
   end
 
   it "should generate four <divs> with the class 'more_complicated'" do
-    #print "\n"
-    #print @more_complicated_form.to_html
-    @more_complicated_form._noko_first(:div)[:class].should == "more_complicated"
-    @more_complicated_form._noko_nth(:div, 1)[:class].should == "more_complicated"
-    @more_complicated_form._noko_nth(:div, 2)[:class].should == "more_complicated"
-    @more_complicated_form._noko_nth(:div, 3)[:class].should == "more_complicated"
+    print "\n"
+    print @more_complicated_form.to_html
+    (0..3).each do |i|
+      @more_complicated_form._noko_nth(:div, i)[:class].should == "more_complicated"
+    end
   end
 
 end

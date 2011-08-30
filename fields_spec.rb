@@ -160,7 +160,7 @@ describe "A Form containing RadioFields" do
   end
 
   it "should have sub-fields that render correctly" do
-    print "\n" + @gender_field.to_html
+    #print "\n" + @gender_field.to_html
     @male_field.to_html.should == "<input value='male' type='radio' name='gender' id='id_gender_male' />"
   end
 
