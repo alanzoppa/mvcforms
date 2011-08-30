@@ -210,7 +210,7 @@ describe "A Form containing ChoiceFields" do
   end
 
   it "should generate a complete select field" do
-    @surname_field.to_html.should == "<select name='surname' id='#{@surname_field.html_id}'>#{@surname_field._html_options}</select>"
+    @surname_field.to_html.should == "<select id='#{@surname_field.html_id}' name='surname'>#{@surname_field._html_options}\n</select>"
   end
 
 end
