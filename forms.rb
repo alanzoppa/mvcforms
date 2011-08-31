@@ -11,8 +11,12 @@ class Form
     _define_defaults
   end
 
+  def redefine_defaults
+  end
+
   def _define_defaults
     @__settings = {:wrapper => :p, :wrapper_attributes => nil, :pretty_print => true}
+    redefine_defaults
   end
 
   def _initialize_fields

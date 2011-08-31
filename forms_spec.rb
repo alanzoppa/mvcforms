@@ -13,8 +13,7 @@ describe "A Form with a TextField" do
     @text_field = @text_form.fields[0]
 
     class DefaultAttributesForm < Form
-      def _define_defaults
-        super
+      def redefine_defaults
         @__settings[:wrapper] = :span
         @__settings[:wrapper_attributes] = {:class => :some_herps}
       end
