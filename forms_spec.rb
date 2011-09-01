@@ -87,17 +87,21 @@ describe "A more complicated form with multiple fields" do
   end
 
   it "should generate four <divs> with the class 'more_complicated'" do
+    print "\n" + @more_complicated_form.to_html
     (0..3).each do |i|
       @more_complicated_form._noko_nth(:div, i)[:class].should == "more_complicated"
     end
   end
 
+  it "should set pretty_print to true on all fields" do
+    @more_complicated_form.fields.all? {|f| f.pretty_print == true }.should be_true
+  end
 end
 
 describe "The same form without line breaks" do
 
   before do
-    class MoreComplicatedForm < Form
+    class CleanerForm < Form
       @@description_of_derps = TextField.new("Herp some derps")
       @@gender_choice = RadioChoiceField.new("Choose your gender", ["Male", "Female"])
       @@cat = CheckboxField.new("Are you a cat?", :checked => :checked, )
@@ -110,9 +114,7 @@ describe "The same form without line breaks" do
       end
 
     end
-    @cleaner_form = MoreComplicatedForm.new
-    #print "\n"
-    #print @cleaner_form.to_html
+    @cleaner_form = CleanerForm.new
   end
 
   it "should generate four <divs> with the class 'more_complicated'" do
@@ -121,8 +123,16 @@ describe "The same form without line breaks" do
     end
   end
 
-  it "should print without line breaks if pretty print is disabled" do
+  it "should print without line breaks" do
     @cleaner_form.to_html.match('\n').should be_nil
+  end
+
+  it "should print without spaces between tags" do
+    @cleaner_form.to_html.match(/>\s+</).should be_nil
+  end
+
+  it "should set pretty_print to false on all fields" do
+    @cleaner_form.fields.all? {|f| f.pretty_print == false }.should be_true
   end
 
 end

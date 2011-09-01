@@ -19,3 +19,24 @@ describe "the wrap_tag method" do
     wrap_tag("derp", with=:span).should == "<span>derp</span>"
   end
 end
+
+describe "the indent method" do
+  before do
+    @string = "Blinky,\nPinky,\nInky,\nClyde"
+    @array = ["Blinky,", "Pinky,", "Inky,", "Clyde"]
+  end
+
+
+  it "should indent two lines by default" do
+    indent(@string).should == "  Blinky,\n  Pinky,\n  Inky,\n  Clyde"
+  end
+
+  it "should handle a pre-split array" do
+    indent(@array).should == "  Blinky,\n  Pinky,\n  Inky,\n  Clyde"
+  end
+
+  it "should indent by n lines" do
+    indent(@string, 4).should == "    Blinky,\n    Pinky,\n    Inky,\n    Clyde"
+  end
+
+end

@@ -6,9 +6,9 @@ class Form
   attr_accessor :fields
 
   def initialize 
+    _define_defaults
     _initialize_fields
     _prepare_getters
-    _define_defaults
   end
 
   def redefine_defaults
@@ -17,6 +17,7 @@ class Form
   def _define_defaults
     @__settings = {:wrapper => :p, :wrapper_attributes => nil, :pretty_print => true}
     redefine_defaults
+    @pretty_print = @__settings[:pretty_print]
   end
 
   def _initialize_fields
@@ -29,15 +30,16 @@ class Form
   def __flatten_fields(field, field_name)
     if field.class == Array && field.all? {|f| f.class.superclass == Field}
       raise "Fields must be of the same type" unless field.all? {|f| f.class == field[0].class }
-      field.each {|f| ___attach_field_name(f, field_name) }
+      field.each {|f| ___attach_field_attributes(f, field_name) }
     elsif field.class.superclass == Field
-      ___attach_field_name(field, field_name)
+      ___attach_field_attributes(field, field_name)
     end
   end
 
-  def ___attach_field_name(field, field_name)
+  def ___attach_field_attributes(field, field_name)
     field.name = field_name.to_sym
     field.attach_names!(field_name) if field.respond_to?(:attach_names!)
+    field.pretty_print = @pretty_print
     @fields << field
   end
 
@@ -84,7 +86,7 @@ class Form
       if @__settings[:pretty_print]
         output += wrap_tag("\n  " + field.to_labeled_html + "\n", tag, attributes) + "\n"
       else
-        output += wrap_tag(field.to_labeled_html(pp=false), tag, attributes)
+        output += wrap_tag(field.to_labeled_html, tag, attributes)
       end
     end
     return output
