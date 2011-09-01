@@ -72,8 +72,7 @@ describe "A more complicated form with multiple fields" do
       @@cat = CheckboxField.new("Are you a cat?", :checked => :checked, )
       @@family = ChoiceField.new("Choose a family", ['Capulet', 'Montague', "Other"])
 
-      def _define_defaults
-        super
+      def redefine_defaults
         @__settings[:wrapper] = :div
         @__settings[:wrapper_attributes] = {:class => "more_complicated"}
       end
@@ -88,11 +87,42 @@ describe "A more complicated form with multiple fields" do
   end
 
   it "should generate four <divs> with the class 'more_complicated'" do
-    print "\n"
-    print @more_complicated_form.to_html
     (0..3).each do |i|
       @more_complicated_form._noko_nth(:div, i)[:class].should == "more_complicated"
     end
+  end
+
+end
+
+describe "The same form without line breaks" do
+
+  before do
+    class MoreComplicatedForm < Form
+      @@description_of_derps = TextField.new("Herp some derps")
+      @@gender_choice = RadioChoiceField.new("Choose your gender", ["Male", "Female"])
+      @@cat = CheckboxField.new("Are you a cat?", :checked => :checked, )
+      @@family = ChoiceField.new("Choose a family", ['Capulet', 'Montague', "Other"])
+
+      def redefine_defaults
+        @__settings[:wrapper] = :div
+        @__settings[:wrapper_attributes] = {:class => "more_complicated"}
+        @__settings[:pretty_print] = false
+      end
+
+    end
+    @cleaner_form = MoreComplicatedForm.new
+    #print "\n"
+    #print @cleaner_form.to_html
+  end
+
+  it "should generate four <divs> with the class 'more_complicated'" do
+    (0..3).each do |i|
+      @cleaner_form._noko_nth(:div, i)[:class].should == "more_complicated"
+    end
+  end
+
+  it "should print without line breaks if pretty print is disabled" do
+    @cleaner_form.to_html.match('\n').should be_nil
   end
 
 end

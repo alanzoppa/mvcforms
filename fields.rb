@@ -27,7 +27,7 @@ class Field
     "id_#{@name}".to_sym
   end
 
-  def to_html
+  def to_html(pp=true)
     value_pairs = @attributes.nil? ? Hash.new : @attributes.dup
     value_pairs[:type] = @type
     value_pairs[:name] = self.name
@@ -39,8 +39,8 @@ class Field
     "<label for='#{self.html_id}'>#{self.label_text}</label>"
   end
 
-  def to_labeled_html
-    label_tag + to_html
+  def to_labeled_html(pp=true)
+    label_tag + to_html(pp=pp)
   end
 
 end
@@ -49,8 +49,8 @@ class TextField < Field
 end
 
 class CheckboxField < Field
-  def to_labeled_html
-    to_html + label_tag
+  def to_labeled_html(pp=true)
+    to_html(pp=pp) + label_tag
   end
 end
 
@@ -59,12 +59,18 @@ class ChoiceField < Field
     @label_text, @values, @attributes = label_text, values, attributes
   end
 
-  def _html_options
-    @values.map { |v| "\n  " + "<option value='#{symbolize v}'>#{v}</option>" }.join
+  def _html_options(pp=true)
+    @values.map { |v|
+      pp ?  "\n  " + "<option value='#{symbolize v}'>#{v}</option>" : "<option value='#{symbolize v}'>#{v}</option>"
+    }.join
   end
 
-  def to_html
-    "\n" + wrap_tag("#{_html_options}\n", :select, {:id => html_id, :name => @name})
+  def to_html(pp=true)
+    if pp
+      "\n" + wrap_tag("#{_html_options}\n", :select, {:id => html_id, :name => @name})
+    else
+      wrap_tag("#{_html_options(pp=pp)}", :select, {:id => html_id, :name => @name})
+    end
   end
 end
 
@@ -80,8 +86,12 @@ class RadioField < Field
     "id_#{@name}_#{@value}".downcase
   end
 
-  def to_labeled_html
-    "  " + to_html + label_tag + "\n"
+  def to_labeled_html(pp=true)
+    if pp
+      "  " + to_html(pp=pp) + label_tag + "\n"
+    else
+      to_html(pp=pp) + label_tag
+    end
   end
 end
 
@@ -101,15 +111,19 @@ class RadioChoiceField < Field
     @fields.each {|field| field.name = name }
   end
 
-  def _html_options
-    @fields.map { |v| v.to_labeled_html }.join
+  def _html_options(pp=true)
+    @fields.map { |v| v.to_labeled_html(pp) }.join
   end
 
-  def fieldset_legend
-    "\n  <legend>#{self.label_text}</legend>\n"
+  def fieldset_legend(pp=true)
+    if pp
+      "\n  <legend>#{self.label_text}</legend>\n"
+    else
+      "<legend>#{self.label_text}</legend>"
+    end
   end
 
-  def to_html
-    wrap_tag(fieldset_legend + self._html_options, :fieldset, {:id => html_id})
+  def to_html(pp=true)
+    wrap_tag(fieldset_legend(pp) + self._html_options(pp), :fieldset, {:id => html_id})
   end
 end

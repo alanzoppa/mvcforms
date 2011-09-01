@@ -81,7 +81,11 @@ class Form
   def to_html(tag=@__settings[:wrapper], attributes=@__settings[:wrapper_attributes])
     output = String.new
     @fields.each do |field|
-      output += wrap_tag("\n  " + field.to_labeled_html + "\n", tag, attributes) + "\n"
+      if @__settings[:pretty_print]
+        output += wrap_tag("\n  " + field.to_labeled_html + "\n", tag, attributes) + "\n"
+      else
+        output += wrap_tag(field.to_labeled_html(pp=false), tag, attributes)
+      end
     end
     return output
   end
