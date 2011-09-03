@@ -78,7 +78,7 @@ class ChoiceField < Field
   def to_html
     option_fields = _html_options + ( @pretty_print ? "\n" : "" )
     output = wrap_tag(option_fields, :select, {:id => html_id, :name => @name})
-    output = "\n" + indent(output) if @pretty_print
+    output = indent(output, :depth => 0, :template => "\n%s") if @pretty_print
     return output
   end
 end
