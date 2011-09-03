@@ -32,12 +32,19 @@ describe "the monkey patch indent method" do
   end
 
   it "should indent by n lines" do
-    @string.indent(:depth => 4).should == "    Blinky,\n    Pinky,\n    Inky,\n    Clyde"
+    @string.indent(4).should == "    Blinky,\n    Pinky,\n    Inky,\n    Clyde"
   end
 
-  it "should append line breaks if necessary" do
-    @string.indent(:template => "%s\n", :depth => 4).should == "    Blinky,\n    Pinky,\n    Inky,\n    Clyde\n"
-    @string.indent(:template => "%s\n").should == "  Blinky,\n  Pinky,\n  Inky,\n  Clyde\n"
+end
+
+describe "the template monkey patch" do
+  before do
+    @byron = "I would to heaven that I were so much clay\nAs I am bone, blood, marrow, passion, feeling"
   end
 
+  it "should interpolate an arbitrary string" do
+    @byron.template("\n%s\n").should == "\nI would to heaven that I were so much clay\nAs I am bone, blood, marrow, passion, feeling\n"
+    @byron.template("%s\n").should == "I would to heaven that I were so much clay\nAs I am bone, blood, marrow, passion, feeling\n"
+    @byron.template("\n%s").should == "\nI would to heaven that I were so much clay\nAs I am bone, blood, marrow, passion, feeling"
+  end
 end
