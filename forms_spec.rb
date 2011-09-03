@@ -96,6 +96,33 @@ describe "A more complicated form with multiple fields" do
   it "should set pretty_print to true on all fields" do
     @more_complicated_form.fields.all? {|f| f.pretty_print == true }.should be_true
   end
+
+  it "should produce a properly indented form" do
+    @more_complicated_form.to_html.should == [
+      "<div class='more_complicated'>",
+      "  <label for='id_description_of_derps'>Herp some derps</label><input type='text' name='description_of_derps' id='id_description_of_derps' />",
+      "</div>",
+      "<div class='more_complicated'>",
+      "  <label for='id_gender_choice'>Choose your gender</label>",
+      "  <fieldset id='id_gender_choice'>",
+      "    <legend>Choose your gender</legend>",
+      "    <input value='male' type='radio' name='gender_choice' id='id_gender_choice_male' /><label for='id_gender_choice_male'>Male</label>",
+      "    <input value='female' type='radio' name='gender_choice' id='id_gender_choice_female' /><label for='id_gender_choice_female'>Female</label>",
+      "  </fieldset>",
+      "</div>",
+      "<div class='more_complicated'>",
+      "  <input checked='checked' type='checkbox' name='cat' id='id_cat' /><label for='id_cat'>Are you a cat?</label>",
+      "</div>",
+      "<div class='more_complicated'>",
+      "  <label for='id_family'>Choose a family</label>",
+      "  <select id='id_family' name='family'>",
+      "    <option value='capulet'>Capulet</option>",
+      "    <option value='montague'>Montague</option>",
+      "    <option value='other'>Other</option>",
+      "  </select>",
+      "</div>"].join("\n")
+  end
+
 end
 
 describe "The same form without line breaks" do
