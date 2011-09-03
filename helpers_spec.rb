@@ -20,28 +20,24 @@ describe "the wrap_tag method" do
   end
 end
 
-describe "the indent method" do
+
+describe "the monkey patch indent method" do
   before do
     @string = "Blinky,\nPinky,\nInky,\nClyde"
-    @array = ["Blinky,", "Pinky,", "Inky,", "Clyde"]
   end
 
 
   it "should indent two lines by default" do
-    indent(@string).should == "  Blinky,\n  Pinky,\n  Inky,\n  Clyde"
-  end
-
-  it "should handle a pre-split array" do
-    indent(@array).should == "  Blinky,\n  Pinky,\n  Inky,\n  Clyde"
+    @string.indent.should == "  Blinky,\n  Pinky,\n  Inky,\n  Clyde"
   end
 
   it "should indent by n lines" do
-    indent(@string, :depth => 4).should == "    Blinky,\n    Pinky,\n    Inky,\n    Clyde"
+    @string.indent(:depth => 4).should == "    Blinky,\n    Pinky,\n    Inky,\n    Clyde"
   end
 
   it "should append line breaks if necessary" do
-    indent(input=@string, :template => "%s\n", :depth => 4).should == "    Blinky,\n    Pinky,\n    Inky,\n    Clyde\n"
-    indent(input=@string, :template => "%s\n").should == "  Blinky,\n  Pinky,\n  Inky,\n  Clyde\n"
+    @string.indent(:template => "%s\n", :depth => 4).should == "    Blinky,\n    Pinky,\n    Inky,\n    Clyde\n"
+    @string.indent(:template => "%s\n").should == "  Blinky,\n  Pinky,\n  Inky,\n  Clyde\n"
   end
 
 end

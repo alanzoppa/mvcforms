@@ -13,14 +13,16 @@ def wrap_tag(string, with=:p, attributes=nil)
   return "<#{with_open}>#{string}</#{with}>"
 end
 
-def indent(input, s={})
-  s[:template] ||= "%s"
-  s[:depth] ||= 2
-  lines = input.class == Array ? input : input.split("\n")
-  indent_spaces = String.new
-  s[:depth].times { |i| indent_spaces += ' ' }
-  output = indent_spaces + lines.join("\n" + indent_spaces)
-  return s[:template] % output 
+class String
+  def indent(s={})
+    s[:template] ||= "%s"
+    s[:depth] ||= 2
+    lines = self.split("\n")
+    indent_spaces = String.new
+    s[:depth].times { |i| indent_spaces += ' ' }
+    output = indent_spaces + lines.join("\n" + indent_spaces)
+    return s[:template] % output 
+  end
 end
 
 class Field
@@ -71,14 +73,14 @@ class ChoiceField < Field
   def _html_options
     html_options = @values.map { |v|
       tag = wrap_tag(v, :option, {:value => symbolize(v)})
-      tag = indent(tag, :depth => 0, :template => "\n  %s") if @pretty_print
+      tag = tag.indent(:depth => 0, :template => "\n  %s") if @pretty_print
     }.join
   end
 
   def to_html
     option_fields = _html_options + ( @pretty_print ? "\n" : "" )
     output = wrap_tag(option_fields, :select, {:id => html_id, :name => @name})
-    output = indent(output, :depth => 0, :template => "\n%s") if @pretty_print
+    output = output.indent(:depth => 0, :template => "\n%s") if @pretty_print
     return output
   end
 end
@@ -97,7 +99,7 @@ class RadioField < Field
 
   def to_labeled_html
     output = to_html + label_tag
-    output = indent(output, :template => "%s\n") if @pretty_print
+    output = output.indent(:template => "%s\n") if @pretty_print
     return output
   end
 end
@@ -120,13 +122,13 @@ class RadioChoiceField < Field
 
   def _html_options
     @fields.map { |v|
-      @pretty_print ? indent(v.to_labeled_html, :template => "%s\n") : v.to_labeled_html 
+      @pretty_print ? v.to_labeled_html.indent(:template => "%s\n") : v.to_labeled_html 
     }.join
   end
 
   def fieldset_legend
     tag = wrap_tag(label_text, :legend)
-    @pretty_print ? indent(tag, :template => "\n%s\n") : tag
+    @pretty_print ? tag.indent(:template => "\n%s\n") : tag
   end
 
   def to_html
