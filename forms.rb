@@ -84,7 +84,8 @@ class Form
     output = String.new
     @fields.each do |field|
       if @__settings[:pretty_print]
-        output += wrap_tag("\n  " + field.to_labeled_html + "\n", tag, attributes) + "\n"
+        field_contents = indent(field.to_labeled_html, :template => "\n%s\n")
+        output += wrap_tag(field_contents, tag, attributes) + "\n"
       else
         output += wrap_tag(field.to_labeled_html, tag, attributes)
       end

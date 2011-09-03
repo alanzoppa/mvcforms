@@ -13,7 +13,7 @@ def wrap_tag(string, with=:p, attributes=nil)
   return "<#{with_open}>#{string}</#{with}>"
 end
 
-def indent(input, s={:template => "%s", :depth => 2})
+def indent(input, s={})
   s[:template] ||= "%s"
   s[:depth] ||= 2
   lines = input.class == Array ? input : input.split("\n")
@@ -78,7 +78,6 @@ class ChoiceField < Field
   def to_html
     option_fields = _html_options + ( @pretty_print ? "\n" : "" )
     output = wrap_tag(option_fields, :select, {:id => html_id, :name => @name})
-    #output = indent(output, :depth => 0, :template => "\n%s") if @pretty_print
     output = "\n" + indent(output) if @pretty_print
     return output
   end
@@ -98,7 +97,8 @@ class RadioField < Field
 
   def to_labeled_html
     output = to_html + label_tag
-    @pretty_print ? "  #{output}\n" : output
+    output = indent(output, :template => "%s\n") if @pretty_print
+    return output
   end
 end
 
@@ -120,13 +120,13 @@ class RadioChoiceField < Field
 
   def _html_options
     @fields.map { |v|
-      @pretty_print ? "  #{v.to_labeled_html}\n" : v.to_labeled_html 
+      @pretty_print ? indent(v.to_labeled_html, :template => "%s\n") : v.to_labeled_html 
     }.join
   end
 
   def fieldset_legend
     tag = wrap_tag(label_text, :legend)
-    @pretty_print ? "\n  #{tag}\n" : tag
+    @pretty_print ? indent(tag, :template => "\n%s\n") : tag
   end
 
   def to_html
