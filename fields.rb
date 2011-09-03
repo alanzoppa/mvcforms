@@ -13,11 +13,14 @@ def wrap_tag(string, with=:p, attributes=nil)
   return "<#{with_open}>#{string}</#{with}>"
 end
 
-def indent(string, depth=2)
-  lines = string.class == Array ? string : string.split("\n")
+def indent(input, s={:template => "%s", :depth => 2})
+  s[:template] ||= "%s"
+  s[:depth] ||= 2
+  lines = input.class == Array ? input : input.split("\n")
   indent_spaces = String.new
-  depth.times { |i| indent_spaces += ' ' }
-  indent_spaces + lines.join("\n" + indent_spaces)
+  s[:depth].times { |i| indent_spaces += ' ' }
+  output = indent_spaces + lines.join("\n" + indent_spaces)
+  return s[:template] % output 
 end
 
 class Field

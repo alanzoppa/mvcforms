@@ -36,7 +36,12 @@ describe "the indent method" do
   end
 
   it "should indent by n lines" do
-    indent(@string, 4).should == "    Blinky,\n    Pinky,\n    Inky,\n    Clyde"
+    indent(@string, :depth => 4).should == "    Blinky,\n    Pinky,\n    Inky,\n    Clyde"
+  end
+
+  it "should append line breaks if necessary" do
+    indent(input=@string, :template => "%s\n", :depth => 4).should == "    Blinky,\n    Pinky,\n    Inky,\n    Clyde\n"
+    indent(input=@string, :template => "%s\n").should == "  Blinky,\n  Pinky,\n  Inky,\n  Clyde\n"
   end
 
 end
