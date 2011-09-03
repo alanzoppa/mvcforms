@@ -71,13 +71,16 @@ class ChoiceField < Field
   def _html_options
     html_options = @values.map { |v|
       tag = wrap_tag(v, :option, {:value => symbolize(v)})
-      tag = "\n  " + tag if @pretty_print
+      tag = indent(tag, :depth => 0, :template => "\n  %s") if @pretty_print
     }.join
   end
 
   def to_html
     option_fields = _html_options + ( @pretty_print ? "\n" : "" )
-    (@pretty_print ? "\n" : "") + wrap_tag(option_fields, :select, {:id => html_id, :name => @name})
+    output = wrap_tag(option_fields, :select, {:id => html_id, :name => @name})
+    #output = indent(output, :depth => 0, :template => "\n%s") if @pretty_print
+    output = "\n" + indent(output) if @pretty_print
+    return output
   end
 end
 
