@@ -18,7 +18,7 @@ class String
     lines = self.split("\n")
     indent_spaces = String.new
     depth.times { |i| indent_spaces += ' ' }
-    indent_spaces + lines.join("\n" + indent_spaces)
+    lines.join("\n#{indent_spaces}").template "#{indent_spaces}%s"
   end
 
   def template(tpl)
