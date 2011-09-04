@@ -12,9 +12,11 @@ class Form
   end
 
   def redefine_defaults
+    #redefine defaults per form by supering this
   end
 
   def _define_defaults
+    # defaults for @__settings below
     @__settings = {:wrapper => :p, :wrapper_attributes => nil, :pretty_print => true}
     redefine_defaults
     @pretty_print = @__settings[:pretty_print]
@@ -23,11 +25,18 @@ class Form
   def _initialize_fields
     @fields = Array.new
     self.class.class_variables.each { |v|
-      __flatten_fields field=self.class.class_variable_get(v), field_name=v.to_s.gsub(/^@@/, '')
+      # the field itself
+      # the field's name cast as string with the leading "@@" stripped
+      #
+      field = self.class.class_variable_get(v)
+      field_name = v.to_s.gsub(/^@@/, '')
+      __flatten_fields(field, field_name)
     }
   end
 
   def __flatten_fields(field, field_name)
+    #Ignore class vars which are not subclasses of Field or Arrays of Fields
+    #Assign attributes per @__settings
     if field.class == Array && field.all? {|f| f.class.superclass == Field}
       raise "Fields must be of the same type" unless field.all? {|f| f.class == field[0].class }
       field.each {|f| ___attach_field_attributes(f, field_name) }
@@ -83,10 +92,10 @@ class Form
   def to_html(tag=@__settings[:wrapper], attributes=@__settings[:wrapper_attributes])
     output = String.new
     @fields.each do |field|
-      if @__settings[:pretty_print]
+      if @pretty_print
         field_contents = field.to_labeled_html.indent.template("\n%s\n")
         output += wrap_tag(field_contents, tag, attributes)
-        output += "\n" unless field == @fields.last and @fields.length > 1
+        output = output.template("%s\n") unless field == @fields.last and @fields.length > 1
       else
         output += wrap_tag(field.to_labeled_html, tag, attributes)
       end
