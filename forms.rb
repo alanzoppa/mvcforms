@@ -28,7 +28,7 @@ class Form
       # the field itself
       # the field's name cast as string with the leading "@@" stripped
       #
-      field = self.class.class_variable_get(v)
+      field = self.class.send("class_variable_get", v)
       field_name = v.to_s.gsub(/^@@/, '')
       __flatten_fields(field, field_name)
     }

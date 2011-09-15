@@ -68,7 +68,7 @@ describe "A more complicated form with multiple fields" do
     class MoreComplicatedForm < Form
       @@description_of_derps = TextField.new("Herp some derps")
       @@gender_choice = RadioChoiceField.new("Choose your gender", ["Male", "Female"])
-      @@cat = CheckboxField.new("Are you a cat?", :checked => :checked, )
+      @@cat = CheckboxField.new("Are you a cat?", :checked => :checked )
       @@family = ChoiceField.new("Choose a family", ['Capulet', 'Montague', "Other"])
 
       def redefine_defaults
@@ -130,7 +130,7 @@ describe "The same form without line breaks" do
     class CleanerForm < Form
       @@description_of_derps = TextField.new("Herp some derps")
       @@gender_choice = RadioChoiceField.new("Choose your gender", ["Male", "Female"])
-      @@cat = CheckboxField.new("Are you a cat?", :checked => :checked, )
+      @@cat = CheckboxField.new("Are you a cat?", :checked => :checked )
       @@family = ChoiceField.new("Choose a family", ['Capulet', 'Montague', "Other"])
 
       def redefine_defaults

@@ -117,7 +117,7 @@ describe "A Low level Form" do
   before do
     class LoginForm < Form
       @@username = TextField.new("Username")
-      @@password = TextField.new("Password", :class => :pw,)
+      @@password = TextField.new("Password", :class => :pw)
       @@herp = "derp"
     end
     @login_form = LoginForm.new
@@ -134,7 +134,7 @@ describe "A Low level Form" do
 
   it "should accept a hash of attributes" do
     class OptInForm < Form
-      @@future_communications = CheckboxField.new("Would you like to receive future communications", :checked => :checked, )
+      @@future_communications = CheckboxField.new("Would you like to receive future communications", :checked => :checked )
     end
     @opt_in_form = OptInForm.new
 
