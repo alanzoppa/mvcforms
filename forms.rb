@@ -35,14 +35,8 @@ class Form
   end
 
   def __flatten_fields(field, field_name)
-    #Ignore class vars which are not subclasses of Field or Arrays of Fields
-    #Assign attributes per @__settings
-    if field.class == Array && field.all? {|f| f.class.superclass == Field}
-      raise "Fields must be of the same type" unless field.all? {|f| f.class == field[0].class }
-      field.each {|f| ___attach_field_attributes(f, field_name) }
-    elsif field.class.superclass == Field
-      ___attach_field_attributes(field, field_name)
-    end
+    #Ignore class vars which are not subclasses of Field
+    ___attach_field_attributes(field, field_name) if field.class.ancestors.include? Field
   end
 
   def ___attach_field_attributes(field, field_name)

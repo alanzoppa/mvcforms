@@ -9,7 +9,7 @@ def flatten_attributes(hash=nil)
 end
 
 def wrap_tag(string, with=:p, attributes=nil)
-  with_open = attributes.nil? ? with : "#{with} " + flatten_attributes(attributes)
+  with_open = attributes.nil? ? with : "#{with} #{flatten_attributes(attributes)}"
   return "<#{with_open}>#{string}</#{with}>"
 end
 
@@ -53,6 +53,10 @@ class Field
 
   def to_labeled_html
     label_tag + to_html
+  end
+
+  def _is_a_field?
+    return true
   end
 
 end

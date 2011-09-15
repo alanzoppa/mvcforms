@@ -1,6 +1,5 @@
 require './test_module'
 require './forms'
-
 require "./fields_spec"
 require "./helpers_spec"
 
