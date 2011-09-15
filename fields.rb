@@ -55,10 +55,6 @@ class Field
     label_tag + to_html
   end
 
-  def _is_a_field?
-    return true
-  end
-
 end
 
 class TextField < Field
