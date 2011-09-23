@@ -7,7 +7,7 @@ class Form
 
   def initialize 
     _define_defaults
-    _initialize_fields
+    #_initialize_fields
     _prepare_getters
   end
 
